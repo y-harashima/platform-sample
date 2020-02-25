@@ -1,0 +1,111 @@
+version: '3'
+services:
+
+  frontproxy:
+    image: envoyproxy/envoy-alpine:v1.13.0
+    networks:
+      - envoymesh
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+      - "9901:9901"
+    container_name: ps-fp
+    tty: true
+    volumes:
+      - ./frontproxy:/etc/envoy
+    command: /usr/local/bin/envoy -c "/etc/envoy/envoy.yaml"
+
+  control-plane:
+    build:
+      context: ./controlplane
+      dockerfile: ./app/Dockerfile
+    image: ps-xds
+    container_name: ps-xds
+    tty: true
+    volumes:
+      - ./controlplane/app/src:/go/app
+    networks:
+      envoymesh:
+        aliases:
+          - control_plane
+    expose:
+      - "8001"
+    ports:
+      - "8001:8001"
+
+
+  customer-proxy:
+    image: envoyproxy/envoy-alpine:v1.13.0
+    networks:
+      envoymesh:
+        aliases:
+          - customer_proxy
+    expose:
+      - "8000"
+    ports:
+      - "8011:8000"
+      - "9902:9902"
+    container_name: ps-cp
+    tty: true
+    volumes:
+      - ./customer/proxy:/etc/envoy
+    command: /usr/local/bin/envoy -c "/etc/envoy/envoy.yaml"
+
+  customer-app:
+    build:
+      context: ./customer
+      dockerfile: ./app/Dockerfile
+    image: ps-ca
+    container_name: ps-ca
+    tty: true
+    volumes:
+      - ./customer/app/src:/go/app
+    networks:
+      envoymesh:
+        aliases:
+          - customer_app
+    expose:
+      - "8080"
+    ports:
+      - "8012:8080"
+    command: go run main.go
+
+  productowner-envoy:
+    image: envoyproxy/envoy-alpine:v1.13.0
+    networks:
+      envoymesh:
+        aliases:
+          - productowner_proxy
+    expose:
+      - "8000"
+    ports:
+      - "8013:8000"
+      - "9903:9903"
+    container_name: ps-pp
+    tty: true
+    volumes:
+      - ./productowner/proxy:/etc/envoy
+    command: /usr/local/bin/envoy -c "/etc/envoy/envoy.yaml"
+
+  productowner-app:
+    build:
+      context: ./productowner
+      dockerfile: ./app/Dockerfile
+    image: ps-pa
+    container_name: ps-pa
+    tty: true
+    volumes:
+      - ./productowner/app/src:/go/app
+    networks:
+      envoymesh:
+        aliases:
+          - productowner_app
+    expose:
+      - "8080"
+    ports:
+      - "8014:8080"
+    command: go run main.go
+
+networks:
+  envoymesh: {}

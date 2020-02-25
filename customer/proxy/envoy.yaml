@@ -1,0 +1,48 @@
+admin:
+  access_log_path: /tmp/admin_access.log
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 9902
+
+static_resources:
+  listeners:
+    - name: "customer-http-listener"
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 8000
+      filter_chains:
+      - filters:
+        - name: "envoy.http_connection_manager"
+          config:
+            stat_prefix: "ingress"
+            codec_type: "AUTO"
+            route_config:
+              name: "customer-http-route"
+              virtual_hosts:
+              - name: "customer-http-route"
+                domains:
+                - "*"
+                routes:
+                - match:
+                    prefix: "/"
+                  route:
+                    cluster: "ps-ca"
+            access_log:
+            - name: envoy.file_access_log
+              config:
+                path: /dev/stdout
+            http_filters:
+            - name: envoy.router
+
+  clusters:
+  - name: "ps-ca"
+    connect_timeout: 60s
+    type: "logical_dns"
+    http2_protocol_options: {}
+    lb_policy: "ROUND_ROBIN"
+    hosts:
+    - socket_address:
+        address: docker.for.mac.localhost
+        port_value: 8012

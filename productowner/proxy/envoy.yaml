@@ -1,0 +1,48 @@
+admin:
+  access_log_path: /tmp_admin_access.log
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 9903
+
+static_resources:
+  listeners:
+    - name: "productowner-http-listener"
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 8000
+      filter_chains:
+      - filters:
+        - name: "envoy.http_connection_manager"
+          config:
+            stat_prefix: "ingress"
+            codec_type: "AUTO"
+            route_config:
+              name: "productowner-http-route"
+              virtual_hosts:
+              - name: "productowner-http-route"
+                domains:
+                - "*"
+                routes:
+                - match:
+                    prefix: "/"
+                  route:
+                    cluster: "ps-pa"
+            access_log:
+            - name: envoy.file_access_log
+              config:
+                path: /dev/stdout
+            http_filters:
+            - name: envoy.router
+
+  clusters:
+  - name: "ps-pa"
+    connect_timeout: 60s
+    type: "logical_dns"
+    http2_protocol_options: {}
+    lb_policy: "ROUND_ROBIN"
+    hosts:
+    - socket_address:
+        address: docker.for.mac.localhost
+        port_value: 8014
