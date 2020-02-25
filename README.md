@@ -33,8 +33,8 @@ When you type this command, you can check to system is running if you want.
 Hit these commands to deploy.  
 `git clone https://github.com/y-harashima/platform-sample.git`  
 `cd platform-sample`  
-`kubectl -f kube/platform-sample.yaml`  
-`kubectl -f kube/platform-gateway.yaml`  
+`kubectl apply -f kube/platform-sample.yaml`  
+`kubectl apply -f kube/platform-gateway.yaml`  
 
 Deploy is complete.  
 <br>
