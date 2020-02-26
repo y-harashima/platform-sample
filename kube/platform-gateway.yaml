@@ -8,7 +8,7 @@ spec:
   servers:
   - port:
       number: 80
-      name: http
+      name: http-gateway
       protocol: HTTP
     hosts:
     - "*"
@@ -25,43 +25,41 @@ spec:
   http:
   - match:
     - uri:
-      prefix: "/sample.Customer"
+        prefix: "/sample.Customer/"
     route:
     - destination:
         host: platform-ca
         port:
-          number: 8080
-      weight: 100
+          number: 50051
   - match:
     - uri:
-        prefix: "/sample.ProductOwner"
+        prefix: "/sample.ProductOwner/"
     route:
     - destination:
         host: platform-pa
         port:
-          number: 8080
-      weight: 100
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: platform
-spec:
-  host: "*"
-  trafficPolicy:
-    loadBalancer:
-      simple: ROUND_ROBIN
----
+          number: 50052
+# ---
 # apiVersion: networking.istio.io/v1alpha3
-# kind: ServiceEntry
+# kind: DestinationRule
 # metadata:
-#  name: platform-entry
+#  name: platform
 # spec:
+#  host: "*"
+#  trafficPolicy:
+#    loadBalancer:
+#      simple: ROUND_ROBIN
+#---
+#apiVersion: networking.istio.io/v1alpha3
+#kind: ServiceEntry
+#metadata:
+#  name: platform-entry
+#spec:
 #  hosts:
-#  - "*"
+#  - istio-ingressgateway.istio-system.svc.cluster.local
 #  ports:
 #  - number: 80
 #    name: http
 #    protocol: HTTP
 #  resolution: DNS
-#  location: MESH_INTERNAL
+#  location: MESH_EXTERNAL

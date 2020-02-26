@@ -61,18 +61,18 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: platform-pa
-  labels:
-    app: platform-pa
-    service: platform-pa
+ name: platform-pa
+ labels:
+   app: platform-pa
+   service: platform-pa
 spec:
-  ports:
-    - port: 8080
-      targetPort: 8080
-      protocol: TCP
-      name: grpc-platform-pa
-  selector:
-    app: platform-pa
+ ports:
+   - port: 50052
+     targetPort: 8080
+     protocol: TCP
+     name: grpc-platform-pa
+ selector:
+   app: platform-pa
 ---
 apiVersion: v1
 kind: Service
@@ -83,7 +83,7 @@ metadata:
     service: platform-ca
 spec:
   ports:
-    - port: 8080
+    - port: 50051
       targetPort: 8080
       protocol: TCP
       name: grpc-platform-ca
