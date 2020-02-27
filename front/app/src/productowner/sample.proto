@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package sample;
+
+service ProductOwner {
+  rpc SayName (ProductOwnerRequest) returns (OwnerMessage);
+}
+
+message ProductOwnerRequest {
+  string name = 1;
+}
+
+message OwnerMessage {
+  string message = 1;
+}

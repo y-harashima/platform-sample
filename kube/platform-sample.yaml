@@ -70,7 +70,7 @@ spec:
    - port: 50052
      targetPort: 8080
      protocol: TCP
-     name: grpc-platform-pa
+     name: grpc-web-platform-pa
  selector:
    app: platform-pa
 ---
@@ -86,6 +86,6 @@ spec:
     - port: 50051
       targetPort: 8080
       protocol: TCP
-      name: grpc-platform-ca
+      name: grpc-web-platform-ca
   selector:
     app: platform-ca

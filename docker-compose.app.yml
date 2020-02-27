@@ -1,0 +1,19 @@
+version: '3'
+services:
+  customer-app:
+    build:
+      context: ./customer
+      dockerfile: ./app/Dockerfile
+    image: ps-ca
+    container_name: ps-ca
+    volumes:
+      - ./customer/app/src:/go/app
+
+  productowner-app:
+    build:
+      context: ./productowner
+      dockerfile: ./app/Dockerfile
+    image: ps-pa
+    container_name: ps-pa
+    volumes:
+      - ./productowner/app/src:/go/app

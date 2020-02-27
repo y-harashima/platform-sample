@@ -29,10 +29,13 @@ When you type this command, you can check to system is running if you want.
 `kubectl get po -n istio-system`  
 
 ### 3. Deploy platform sample on your local kubernetes.
-  
-Hit these commands to deploy.  
+
+Please build the app image before deploy.
 `git clone https://github.com/y-harashima/platform-sample.git`  
 `cd platform-sample`  
+`docker-compose -f docker-compose.app.yml build`  
+  
+And hit these commands to deploy.    
 `kubectl apply -f kube/platform-sample.yaml`  
 `kubectl apply -f kube/platform-gateway.yaml`  
 
@@ -40,7 +43,14 @@ Deploy is complete.
 <br>
   
 ## Usage
-Sorry, this section is work in progress.
+You can try gRPC routing from react app.
+  
+Please hit these commands to run React app container, and open your browser.  
+`docker-compose build`  
+`docker-compose up -d`  
+`open http://localhost:3000`  
+
+If you input the top of textarea and click buttons, message will display below.
   
 <br>  
 
