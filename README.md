@@ -30,12 +30,13 @@ When you type this command, you can check to system is running if you want.
 
 ### 3. Deploy platform sample on your local kubernetes.
 
-Please build the app image before deploy.
+Please build the app image before deploy.  
 `git clone https://github.com/y-harashima/platform-sample.git`  
 `cd platform-sample`  
 `docker-compose -f docker-compose.app.yml build`  
   
-And hit these commands to deploy.    
+And hit these commands to deploy.  
+`kubectl label namespace default istio-injection=enabled`   
 `kubectl apply -f kube/platform-sample.yaml`  
 `kubectl apply -f kube/platform-gateway.yaml`  
 
